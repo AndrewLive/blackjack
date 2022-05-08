@@ -11,37 +11,13 @@ for i in card_types:
 
 card_values = {}
 for i in range(1, 11):
-    card_values[card_types[i]] = i
+    card_values[card_types[i-1]] = i
 card_values["jack"] = 10
 card_values["queen"] = 10
 card_values["king"] = 10
 
 
-# Class for the player's hand and its value
-class Hand():
-    def __init__(self):
-        self.hand = ()
-        self.value = 0
-        return
-    
-    # draw one card from the deck
-    # does not add the value of the card to the hand
-    def __draw__(self):
-        i = random.randint(0, 12)
-        while(deck[card_types[i]] == 0):
-            i = random.randint(0, 12)
-        
-        self.hand += (card_types[i], )
-        deck[card_types[i]] -= 1
-        return
-    
-    # draw the cards for the desired starting hand value
-    # takes a dict of HandValueHands objects with integer keys
-    def draw_starting_hand(self, start_value):
-        pass
-
-
-# class for various hand values and their possible hands
+# Class for various hand values and their possible hands
 class HandValueHands():
     def __init__(self, hand_value):
         self.hands = []
@@ -73,6 +49,7 @@ class HandValueHands():
             if i < 0:
                 return k
     
+    # graph the probability distribution of each possible hand
     def graph_hands(self):
         drawn_hands = {}
         for i in self.hands:
@@ -92,8 +69,6 @@ class HandValueHands():
         plt.show()
         return
 
-
-
 ### HAND VALUE INITIALIZATION ###
 
 # for each hand value tested, list possible hands
@@ -109,7 +84,7 @@ eleven.hands = [("ace", "ten"),
                 ("four", "seven"),
                 ("five", "six"),]
 eleven.init_prob()
-eleven.graph_hands()
+#eleven.graph_hands()
 
 # hand value = 12
 twelve = HandValueHands(12)
@@ -123,7 +98,7 @@ twelve.hands = [("ace", "ace"),
                 ("five", "seven"),
                 ("six", "six"),]
 twelve.init_prob()
-twelve.graph_hands()
+#twelve.graph_hands()
 
 # hand value = 13
 thirteen = HandValueHands(13)
@@ -136,7 +111,7 @@ thirteen.hands = [("three", "ten"),
                 ("six", "seven"),
                 ("ace", "two")]
 thirteen.init_prob()
-thirteen.graph_hands()
+#thirteen.graph_hands()
 
 # hand value = 14
 fourteen = HandValueHands(14)
@@ -149,7 +124,7 @@ fourteen.hands = [("four", "ten"),
                 ("seven", "seven"),
                 ("ace", "three")]
 fourteen.init_prob()
-fourteen.graph_hands()
+#fourteen.graph_hands()
 
 # hand value = 15
 fifteen = HandValueHands(15)
@@ -161,7 +136,7 @@ fifteen.hands = [("five", "ten"),
                 ("seven", "eight"),
                 ("ace", "four")]
 fifteen.init_prob()
-fifteen.graph_hands()
+#fifteen.graph_hands()
 
 # hand value = 16
 sixteen = HandValueHands(16)
@@ -173,7 +148,7 @@ sixteen.hands = [("six", "ten"),
                 ("eight", "eight"),
                 ("ace", "five")]
 sixteen.init_prob()
-sixteen.graph_hands()
+#sixteen.graph_hands()
 
 # hand value = 17
 seventeen = HandValueHands(17)
@@ -184,7 +159,7 @@ seventeen.hands = [("seven", "ten"),
                 ("eight", "nine"),
                 ("ace", "six")]
 seventeen.init_prob()
-seventeen.graph_hands()
+#seventeen.graph_hands()
 
 # hand value = 18
 eighteen = HandValueHands(18)
@@ -195,7 +170,7 @@ eighteen.hands = [("eight", "ten"),
                 ("nine", "nine"),
                 ("ace", "seven")]
 eighteen.init_prob()
-eighteen.graph_hands()
+#eighteen.graph_hands()
 
 # hand value = 19
 nineteen = HandValueHands(19)
@@ -205,7 +180,7 @@ nineteen.hands = [("nine", "ten"),
                 ("nine", "king"),
                 ("ace", "eight")]
 nineteen.init_prob()
-nineteen.graph_hands()
+#nineteen.graph_hands()
 
 # hand value = 20
 twenty = HandValueHands(20)
@@ -221,5 +196,71 @@ twenty.hands = [("ten", "ten"),
                 ("king", "king"),
                 ("ace", "nine")]
 twenty.init_prob()
-twenty.graph_hands()
+#twenty.graph_hands()
 
+### END HAND VALUE INITIALIZATION ###
+
+# define a dict mapping hand value objects to an integer
+hand_values_dict = {11: eleven,
+                    12: twelve,
+                    13: thirteen,
+                    14: fourteen,
+                    15: fifteen,
+                    16: sixteen,
+                    17: seventeen,
+                    18: eighteen,
+                    19: nineteen,
+                    20: twenty}
+
+
+# Class for the player's hand and its value
+class Hand():
+    def __init__(self):
+        self.hand = ()
+        self.value = 0
+        return
+    
+    # draw one random card from the deck
+    def draw_random(self):
+        #TODO CURRENTLY DOES NOT TAKE PROBABILITY
+        #OF REMAINING CARDS INTO ACCOUNT
+        #SHOULD BE OUT OF ALL REMAINING CARDS NOT
+        #JUST CARD TYPES
+        i = random.randint(0, 12)
+        while(deck[card_types[i]] == 0):
+            i = random.randint(0, 12)
+        
+        self.hand += (card_types[i], )
+        deck[card_types[i]] -= 1
+        # TODO TEST IF THE CARD VALUES MATH IS CORRECT
+        self.value += card_values[card_types[i]]
+        return
+
+    # draw specified card
+    # does nothing if the card isnt in deck
+    def draw_specific(self, card):
+        if deck[card] == 0:
+            return
+
+        self.hand += (card, )
+        deck[card] -= 1
+        # TODO TEST IF THE CARD VALUES MATH IS CORRECT
+        self.value += card_values[card]
+        return
+    
+    # draw the cards for the desired starting hand value
+    # takes a dict of HandValueHands objects with integer keys
+    # NOTE: assumes that deck is full before drawing starting hands
+    def draw_starting_hand(self, start_value):
+        start_hand = hand_values_dict[start_value].choose_hand()
+
+        for i in start_hand:
+            self.draw_specific(i)
+        return
+
+
+test_hand = Hand()
+test_hand.draw_starting_hand(17)
+print(test_hand.hand)
+print(test_hand.value)
+print(deck)
