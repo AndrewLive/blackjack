@@ -334,6 +334,7 @@ class Hand():
 
         for i in start_hand:
             self.draw_specific(i)
+        self.value = start_value
         return
 
 
