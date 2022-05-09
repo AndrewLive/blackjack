@@ -4,7 +4,8 @@ import random
 
 
 # Initialize the deck and card values/types
-card_types = ("ace", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "jack", "queen", "king")
+card_types = ("ace", "two", "three", "four", "five", "six", "seven", 
+              "eight", "nine", "ten", "jack", "queen", "king")
 deck = {}
 for i in card_types:
     deck[i] = 4
