@@ -6,6 +6,10 @@ import random
 # Initialize the deck and card values/types
 card_types = ("ace", "two", "three", "four", "five", "six", "seven", 
               "eight", "nine", "ten", "jack", "queen", "king")
+
+# TODO: implement deck as a class with the cards left/each card's count,
+# and total cards in the deck
+# TODO: also methods like bool hand_in_deck(deck, hand)
 deck = {}
 for i in card_types:
     deck[i] = 4
@@ -17,6 +21,8 @@ card_values["jack"] = 10
 card_values["queen"] = 10
 card_values["king"] = 10
 
+
+# TODO: implement an averagerator class for stats purposes
 
 # Class for various hand values and their possible hands
 class StartValueHands():
@@ -337,6 +343,10 @@ class Hand():
         self.value = start_value
         return
 
+
+# TODO: implement function to reset all hands and deck
+# maybe put all hands in a list and iterate over list to reset them
+# this will require reset methods for both hand and deck
 
 # Test drawing a starting hand
 test_hand = Hand()
