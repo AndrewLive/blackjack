@@ -51,22 +51,29 @@ class StartValueHands():
                 return k
     
     # graph the probability distribution of each possible hand
+    # TODO: use numpy for stats computing
     def graph_hands(self):
+        n = 50000
         drawn_hands = {}
         for i in self.hands:
             drawn_hands[i] = 0
-        for i in range(50000):
+        for i in range(n):
             hand = self.choose_hand()
             drawn_hands[hand] += 1
+        
+        drawn_hands_normalized = {}
+        for i in drawn_hands:
+            drawn_hands_normalized[i] = drawn_hands[i] / n
 
-        names = list(drawn_hands.keys())
-        values = list(drawn_hands.values())
+        names = list(drawn_hands_normalized.keys())
+        values = list(drawn_hands_normalized.values())
 
         plt.figure(figsize=[10,5])
         plt.xticks(fontsize=8)
-        plt.bar(range(len(drawn_hands)), values, align='center')
-        plt.xticks(range(len(drawn_hands)), names)
+        plt.bar(range(len(drawn_hands_normalized)), values, align='center')
+        plt.xticks(range(len(drawn_hands_normalized)), names)
         plt.title(f"Hand Value = {self.hand_value}")
+        plt.suptitle(f"n = {n}")
         plt.show()
         return
 
