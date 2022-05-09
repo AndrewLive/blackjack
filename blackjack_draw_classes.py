@@ -18,7 +18,7 @@ card_values["king"] = 10
 
 
 # Class for various hand values and their possible hands
-class HandValueHands():
+class StartValueHands():
     def __init__(self, hand_value):
         self.hands = []
         self.hand_prob = {}
@@ -73,8 +73,69 @@ class HandValueHands():
 
 # for each hand value tested, list possible hands
 
+# hand value = 2 
+two = StartValueHands(2)
+two.hands =   [("ace", "ace")]
+two.init_prob()
+
+# hand value = 3 
+three = StartValueHands(3)
+three.hands =   [("ace", "two")]
+three.init_prob()
+
+# hand value = 4 
+four = StartValueHands(4)
+four.hands =   [("ace", "three"),
+                ("two", "two")]
+four.init_prob()
+
+# hand value = 5 
+five = StartValueHands(5)
+five.hands =   [("ace", "four"),
+                ("two", "three")]
+five.init_prob()
+
+# hand value = 6 
+six = StartValueHands(6)
+six.hands =   [("ace", "five"),
+                ("two", "four"),
+                ("three", "three")]
+six.init_prob()
+
+# hand value = 7 
+seven = StartValueHands(7)
+seven.hands =   [("ace", "six"),
+                ("two", "five"),
+                ("three", "four")]
+seven.init_prob()
+
+# hand value = 8 
+eight = StartValueHands(8)
+eight.hands =   [("ace", "seven"),
+                ("two", "six"),
+                ("three", "five"),
+                ("four", "four")]
+eight.init_prob()
+
+# hand value = 9 
+nine = StartValueHands(9)
+nine.hands =    [("ace", "eight"),
+                ("two", "seven"),
+                ("three", "six"),
+                ("four", "five")]
+nine.init_prob()
+
+# hand value = 10
+ten = StartValueHands(10)
+ten.hands =     [("ace", "nine"),
+                ("two", "eight"),
+                ("three", "seven"),
+                ("four", "six"),
+                ("five", "five")]
+ten.init_prob()
+
 # hand value = 11
-eleven = HandValueHands(11)
+eleven = StartValueHands(11)
 eleven.hands = [("ace", "ten"),
                 ("ace", "jack"),
                 ("ace", "queen"),
@@ -86,7 +147,7 @@ eleven.hands = [("ace", "ten"),
 eleven.init_prob()
 
 # hand value = 12
-twelve = HandValueHands(12)
+twelve = StartValueHands(12)
 twelve.hands = [("ace", "ace"),
                 ("two", "ten"),
                 ("two", "jack"),
@@ -99,7 +160,7 @@ twelve.hands = [("ace", "ace"),
 twelve.init_prob()
 
 # hand value = 13
-thirteen = HandValueHands(13)
+thirteen = StartValueHands(13)
 thirteen.hands = [("three", "ten"),
                 ("three", "jack"),
                 ("three", "queen"),
@@ -111,7 +172,7 @@ thirteen.hands = [("three", "ten"),
 thirteen.init_prob()
 
 # hand value = 14
-fourteen = HandValueHands(14)
+fourteen = StartValueHands(14)
 fourteen.hands = [("four", "ten"),
                 ("four", "jack"),
                 ("four", "queen"),
@@ -123,7 +184,7 @@ fourteen.hands = [("four", "ten"),
 fourteen.init_prob()
 
 # hand value = 15
-fifteen = HandValueHands(15)
+fifteen = StartValueHands(15)
 fifteen.hands = [("five", "ten"),
                 ("five", "jack"),
                 ("five", "queen"),
@@ -134,7 +195,7 @@ fifteen.hands = [("five", "ten"),
 fifteen.init_prob()
 
 # hand value = 16
-sixteen = HandValueHands(16)
+sixteen = StartValueHands(16)
 sixteen.hands = [("six", "ten"),
                 ("six", "jack"),
                 ("six", "queen"),
@@ -145,7 +206,7 @@ sixteen.hands = [("six", "ten"),
 sixteen.init_prob()
 
 # hand value = 17
-seventeen = HandValueHands(17)
+seventeen = StartValueHands(17)
 seventeen.hands = [("seven", "ten"),
                 ("seven", "jack"),
                 ("seven", "queen"),
@@ -155,7 +216,7 @@ seventeen.hands = [("seven", "ten"),
 seventeen.init_prob()
 
 # hand value = 18
-eighteen = HandValueHands(18)
+eighteen = StartValueHands(18)
 eighteen.hands = [("eight", "ten"),
                 ("eight", "jack"),
                 ("eight", "queen"),
@@ -165,7 +226,7 @@ eighteen.hands = [("eight", "ten"),
 eighteen.init_prob()
 
 # hand value = 19
-nineteen = HandValueHands(19)
+nineteen = StartValueHands(19)
 nineteen.hands = [("nine", "ten"),
                 ("nine", "jack"),
                 ("nine", "queen"),
@@ -174,7 +235,7 @@ nineteen.hands = [("nine", "ten"),
 nineteen.init_prob()
 
 # hand value = 20
-twenty = HandValueHands(20)
+twenty = StartValueHands(20)
 twenty.hands = [("ten", "ten"),
                 ("ten", "jack"),
                 ("ten", "queen"),
@@ -189,7 +250,7 @@ twenty.hands = [("ten", "ten"),
 twenty.init_prob()
 
 # hand value = 21
-twentyone = HandValueHands(21)
+twentyone = StartValueHands(21)
 twentyone.hands = [("ten", "ace"),
                 ("jack", "ace"),
                 ("queen", "ace"),
@@ -200,7 +261,16 @@ twentyone.init_prob()
 ### END HAND VALUE INITIALIZATION ###
 
 # define a dict mapping hand value objects to an integer
-hand_values_dict = {11: eleven,
+hand_values_dict = {2: two,
+                    3: three,
+                    4: four,
+                    5: five,
+                    6: six,
+                    7: seven,
+                    8: eight,
+                    9: nine,
+                    10: ten,
+                    11: eleven,
                     12: twelve,
                     13: thirteen,
                     14: fourteen,
@@ -249,7 +319,7 @@ class Hand():
         return
     
     # draw the cards for the desired starting hand value
-    # takes a dict of HandValueHands objects with integer keys
+    # takes a dict of StartValueHands objects with integer keys
     # NOTE: assumes that deck is full before drawing starting hands
     def draw_starting_hand(self, start_value):
         start_hand = hand_values_dict[start_value].choose_hand()
