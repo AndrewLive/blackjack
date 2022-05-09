@@ -84,7 +84,6 @@ eleven.hands = [("ace", "ten"),
                 ("four", "seven"),
                 ("five", "six"),]
 eleven.init_prob()
-#eleven.graph_hands()
 
 # hand value = 12
 twelve = HandValueHands(12)
@@ -98,7 +97,6 @@ twelve.hands = [("ace", "ace"),
                 ("five", "seven"),
                 ("six", "six"),]
 twelve.init_prob()
-#twelve.graph_hands()
 
 # hand value = 13
 thirteen = HandValueHands(13)
@@ -111,7 +109,6 @@ thirteen.hands = [("three", "ten"),
                 ("six", "seven"),
                 ("ace", "two")]
 thirteen.init_prob()
-#thirteen.graph_hands()
 
 # hand value = 14
 fourteen = HandValueHands(14)
@@ -124,7 +121,6 @@ fourteen.hands = [("four", "ten"),
                 ("seven", "seven"),
                 ("ace", "three")]
 fourteen.init_prob()
-#fourteen.graph_hands()
 
 # hand value = 15
 fifteen = HandValueHands(15)
@@ -136,7 +132,6 @@ fifteen.hands = [("five", "ten"),
                 ("seven", "eight"),
                 ("ace", "four")]
 fifteen.init_prob()
-#fifteen.graph_hands()
 
 # hand value = 16
 sixteen = HandValueHands(16)
@@ -148,7 +143,6 @@ sixteen.hands = [("six", "ten"),
                 ("eight", "eight"),
                 ("ace", "five")]
 sixteen.init_prob()
-#sixteen.graph_hands()
 
 # hand value = 17
 seventeen = HandValueHands(17)
@@ -159,7 +153,6 @@ seventeen.hands = [("seven", "ten"),
                 ("eight", "nine"),
                 ("ace", "six")]
 seventeen.init_prob()
-#seventeen.graph_hands()
 
 # hand value = 18
 eighteen = HandValueHands(18)
@@ -170,7 +163,6 @@ eighteen.hands = [("eight", "ten"),
                 ("nine", "nine"),
                 ("ace", "seven")]
 eighteen.init_prob()
-#eighteen.graph_hands()
 
 # hand value = 19
 nineteen = HandValueHands(19)
@@ -180,7 +172,6 @@ nineteen.hands = [("nine", "ten"),
                 ("nine", "king"),
                 ("ace", "eight")]
 nineteen.init_prob()
-#nineteen.graph_hands()
 
 # hand value = 20
 twenty = HandValueHands(20)
@@ -196,7 +187,15 @@ twenty.hands = [("ten", "ten"),
                 ("king", "king"),
                 ("ace", "nine")]
 twenty.init_prob()
-#twenty.graph_hands()
+
+# hand value = 21
+twentyone = HandValueHands(21)
+twentyone.hands = [("ten", "ace"),
+                ("jack", "ace"),
+                ("queen", "ace"),
+                ("king", "ace"),]
+twentyone.init_prob()
+
 
 ### END HAND VALUE INITIALIZATION ###
 
@@ -210,7 +209,8 @@ hand_values_dict = {11: eleven,
                     17: seventeen,
                     18: eighteen,
                     19: nineteen,
-                    20: twenty}
+                    20: twenty,
+                    21: twentyone}
 
 
 # Class for the player's hand and its value
@@ -259,8 +259,13 @@ class Hand():
         return
 
 
+# Test drawing a starting hand
 test_hand = Hand()
 test_hand.draw_starting_hand(17)
 print(test_hand.hand)
 print(test_hand.value)
 print(deck)
+
+# Graph the probability distributions for each starting value
+for i in hand_values_dict:
+    hand_values_dict[i].graph_hands()
