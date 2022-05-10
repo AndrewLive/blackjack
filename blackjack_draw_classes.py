@@ -226,6 +226,7 @@ class Hand():
         #OF REMAINING CARDS INTO ACCOUNT
         #SHOULD BE OUT OF ALL REMAINING CARDS NOT
         #JUST CARD TYPES
+        # idea: implement a deck class w/ deck dict and sum of cards
         i = random.randint(0, 12)
         while(deck[card_types[i]] == 0):
             i = random.randint(0, 12)
