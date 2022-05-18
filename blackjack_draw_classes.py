@@ -150,11 +150,7 @@ ten.init_prob()
 
 # hand value = 11
 eleven = StartValueHands(11)
-eleven.hands = [("ace", "ten"),
-                ("ace", "jack"),
-                ("ace", "queen"),
-                ("ace", "king"),
-                ("two", "nine"),
+eleven.hands = [("two", "nine"),
                 ("three", "eight"),
                 ("four", "seven"),
                 ("five", "six"),]
@@ -359,3 +355,13 @@ print(deck)
 # Graph the probability distributions for each starting value
 for i in hand_values_dict:
     hand_values_dict[i].graph_hands()
+
+
+# TODO AND DATA TO GATHER:
+# -----------------------
+# probability of each hand value + bust after hitting
+#   AKA probability of getting each possible hand value after hitting
+
+# Output the numerical probability of busting
+# after hitting and the average hand value of 
+# the hand after hitting
