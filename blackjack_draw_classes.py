@@ -22,6 +22,40 @@ card_values["queen"] = 10
 card_values["king"] = 10
 
 
+# Class for the deck of cards to draw from
+class Deck():
+    def __init__(self):
+        self.card_types = ("ace", "two", "three", "four", "five", 
+                        "six", "seven", "eight", "nine", "ten", 
+                        "jack", "queen", "king")
+        self.deck = {}
+        for i in self.card_types:
+            deck[i] = 4
+        
+        self.card_values = {}
+        for i in range(1, 11):
+            card_values[card_types[i-1]] = i
+        card_values["jack"] = 10
+        card_values["queen"] = 10
+        card_values["king"] = 10
+
+        return
+
+    # returns whether there is a specific card value
+    # still in the deck
+    def card_in_deck(self, card):
+        return self.deck[card] != 0
+
+    # resets the count for all cards in deck
+    # NOTE: DOES NOTHING FOR HANDS THAT HAVE ALREADY
+    # DRAWN CARDS
+    def reset_deck(self):
+        for i in self.deck:
+            self.deck[i] = 4
+        return
+
+
+
 # TODO: implement an averagerator class for stats purposes
 
 # Class for various hand values and their possible hands
