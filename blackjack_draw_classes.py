@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import random
+from collections import defaultdict
 
 
 # Initialize the deck and card values/types
@@ -30,14 +31,16 @@ class Deck():
                         "jack", "queen", "king")
         self.deck = {}
         for i in self.card_types:
-            deck[i] = 4
+            self.deck[i] = 4
         
         self.card_values = {}
         for i in range(1, 11):
-            card_values[card_types[i-1]] = i
-        card_values["jack"] = 10
-        card_values["queen"] = 10
-        card_values["king"] = 10
+            self.card_values[card_types[i-1]] = i
+        self.card_values["jack"] = 10
+        self.card_values["queen"] = 10
+        self.card_values["king"] = 10
+
+        self.total_cards = 52
 
         return
 
@@ -52,6 +55,7 @@ class Deck():
     def reset_deck(self):
         for i in self.deck:
             self.deck[i] = 4
+        self.total_cards = 52
         return
 
 
@@ -114,7 +118,8 @@ class StartValueHands():
         plt.xticks(range(len(drawn_hands_normalized)), names)
         plt.title(f"Hand Value = {self.hand_value}")
         plt.suptitle(f"n = {n}")
-        plt.show()
+        plt.savefig('blackjack/graphs/hand_' + str(self.hand_value) + '.png', bbox_inches='tight')
+        # plt.show()
         return
 
 ### HAND VALUE INITIALIZATION ###
@@ -341,7 +346,7 @@ class Hand():
         #SHOULD BE OUT OF ALL REMAINING CARDS NOT
         #JUST CARD TYPES
         # idea: implement a deck class w/ deck dict and sum of cards
-        i = random.randint(0, 12)
+        i = random.randint(0, 52)
         while(deck[card_types[i]] == 0):
             i = random.randint(0, 12)
         
@@ -374,10 +379,22 @@ class Hand():
         self.value = start_value
         return
 
+    # reset the hand to an empty state
+    # NOTE: Does not reset the deck the hand drew from
+    def reset_hand(self):
+        self.hand = ()
+        self.value = 0
+        return
+
 
 # TODO: implement function to reset all hands and deck
 # maybe put all hands in a list and iterate over list to reset them
 # this will require reset methods for both hand and deck
+def reset_hand_and_deck(hand):
+    hand.reset_hand()
+    for i in card_types:
+        deck[i] = 4
+
 
 # Test drawing a starting hand
 test_hand = Hand()
@@ -387,8 +404,46 @@ print(test_hand.value)
 print(deck)
 
 # Graph the probability distributions for each starting value
-for i in hand_values_dict:
-    hand_values_dict[i].graph_hands()
+#for i in range(11, 21):
+    #hand_values_dict[i].graph_hands()
+
+reset_hand_and_deck(test_hand)
+print(test_hand.hand)
+print(test_hand.value)
+print(deck)
+
+test_hand.draw_starting_hand(19)
+print(test_hand.hand)
+print(test_hand.value)
+print(deck)
+
+# Test graphing for 15
+prob_test_hand = Hand()
+reset_hand_and_deck(prob_test_hand)
+trials = 50000
+total_of_all_hands = 0
+total_of_valid_hands = 0
+num_valid_hands = 0
+total_for_all_hands = defaultdict(lambda:0)
+for n in range(trials):
+    # print(n)
+    prob_test_hand.draw_starting_hand(15)
+    prob_test_hand.draw_random()
+    # print(prob_test_hand.value)
+
+    total_of_all_hands += prob_test_hand.value
+    if prob_test_hand.value <= 21:
+        num_valid_hands += 1
+        total_of_valid_hands += prob_test_hand.value
+        total_for_all_hands[prob_test_hand.value] += 1
+    else:
+        total_for_all_hands['Bust'] += 1
+    
+    reset_hand_and_deck(prob_test_hand)
+
+print(total_for_all_hands)
+print(num_valid_hands)
+
 
 
 # TODO AND DATA TO GATHER:
