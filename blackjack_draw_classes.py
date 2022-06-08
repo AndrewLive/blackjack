@@ -48,6 +48,15 @@ class Deck():
     # still in the deck
     def card_in_deck(self, card):
         return self.deck[card] != 0
+    
+    # remove specific card from deck if it exists
+    # also returns the card if it exists in the deck
+    def remove_from_deck(self, card):
+        if self.deck[card] != 0:
+            self.deck[card] -= 1
+            self.total_cards -=1
+            return card
+        return
 
     # resets the count for all cards in deck
     # NOTE: DOES NOTHING FOR HANDS THAT HAVE ALREADY
@@ -58,6 +67,8 @@ class Deck():
         self.total_cards = 52
         return
 
+# THIS IS THE GLOBAL DECK
+global_deck = Deck()
 
 
 # TODO: implement an averagerator class for stats purposes
@@ -118,8 +129,9 @@ class StartValueHands():
         plt.xticks(range(len(drawn_hands_normalized)), names)
         plt.title(f"Hand Value = {self.hand_value}")
         plt.suptitle(f"n = {n}")
-        plt.savefig('blackjack/graphs/hand_' + str(self.hand_value) + '.png', bbox_inches='tight')
+        plt.savefig('blackjack/graphs/hand_probs/hand_' + str(self.hand_value) + '.png', bbox_inches='tight')
         # plt.show()
+        plt.close()
         return
 
 ### HAND VALUE INITIALIZATION ###
@@ -346,26 +358,32 @@ class Hand():
         #SHOULD BE OUT OF ALL REMAINING CARDS NOT
         #JUST CARD TYPES
         # idea: implement a deck class w/ deck dict and sum of cards
-        i = random.randint(0, 52)
-        while(deck[card_types[i]] == 0):
-            i = random.randint(0, 12)
-        
-        self.hand += (card_types[i], )
-        deck[card_types[i]] -= 1
-        # TODO TEST IF THE CARD VALUES MATH IS CORRECT
-        self.value += card_values[card_types[i]]
+        i = random.randint(0, global_deck.total_cards - 1)
+        # print(global_deck.total_cards)
+        returned_card = None
+        for k in global_deck.deck.keys():
+            i -= global_deck.deck[k]
+            if i < 0:
+                returned_card = global_deck.remove_from_deck(k)
+                break
+
+        # print(global_deck.total_cards)
+        # if returned_card == None:
+            # print(returned_card)
+
+        if returned_card != None:
+            self.hand += (returned_card, )
+            self.value += card_values[returned_card]
         return
 
     # draw specified card
     # does nothing if the card isnt in deck
     def draw_specific(self, card):
-        if deck[card] == 0:
-            return
+        returned_card = global_deck.remove_from_deck(card)
+        self.hand += (returned_card, )
 
-        self.hand += (card, )
-        deck[card] -= 1
         # TODO TEST IF THE CARD VALUES MATH IS CORRECT
-        self.value += card_values[card]
+        self.value += card_values[returned_card]
         return
     
     # draw the cards for the desired starting hand value
@@ -390,10 +408,9 @@ class Hand():
 # TODO: implement function to reset all hands and deck
 # maybe put all hands in a list and iterate over list to reset them
 # this will require reset methods for both hand and deck
-def reset_hand_and_deck(hand):
+def reset_hand_and_deck(hand, deck):
     hand.reset_hand()
-    for i in card_types:
-        deck[i] = 4
+    deck.reset_deck()
 
 
 # Test drawing a starting hand
@@ -401,49 +418,19 @@ test_hand = Hand()
 test_hand.draw_starting_hand(17)
 print(test_hand.hand)
 print(test_hand.value)
-print(deck)
+print(global_deck.deck)
 
-# Graph the probability distributions for each starting value
-#for i in range(11, 21):
-    #hand_values_dict[i].graph_hands()
 
-reset_hand_and_deck(test_hand)
+
+reset_hand_and_deck(test_hand, global_deck)
 print(test_hand.hand)
 print(test_hand.value)
-print(deck)
+print(global_deck.deck)
 
 test_hand.draw_starting_hand(19)
 print(test_hand.hand)
 print(test_hand.value)
-print(deck)
-
-# Test graphing for 15
-prob_test_hand = Hand()
-reset_hand_and_deck(prob_test_hand)
-trials = 50000
-total_of_all_hands = 0
-total_of_valid_hands = 0
-num_valid_hands = 0
-total_for_all_hands = defaultdict(lambda:0)
-for n in range(trials):
-    # print(n)
-    prob_test_hand.draw_starting_hand(15)
-    prob_test_hand.draw_random()
-    # print(prob_test_hand.value)
-
-    total_of_all_hands += prob_test_hand.value
-    if prob_test_hand.value <= 21:
-        num_valid_hands += 1
-        total_of_valid_hands += prob_test_hand.value
-        total_for_all_hands[prob_test_hand.value] += 1
-    else:
-        total_for_all_hands['Bust'] += 1
-    
-    reset_hand_and_deck(prob_test_hand)
-
-print(total_for_all_hands)
-print(num_valid_hands)
-
+print(global_deck.deck)
 
 
 # TODO AND DATA TO GATHER:
@@ -454,3 +441,92 @@ print(num_valid_hands)
 # Output the numerical probability of busting
 # after hitting and the average hand value of 
 # the hand after hitting
+
+
+
+# Graph the probability distributions for each starting value
+for i in range(11, 21):
+    print('Graphing hand distribution for', i)
+    hand_values_dict[i].graph_hands()
+
+## Graph for hands 11-20
+value_after_hit = {}
+avg_valid_hand = {}
+avg_after_hit = {}
+for i in range(11, 21):
+    value_after_hit[i] = []
+    avg_valid_hand[i] = 0
+    avg_after_hit[i] = 0
+
+for testing_hand_value in range(11, 21):
+    prob_test_hand = Hand()
+    reset_hand_and_deck(prob_test_hand, global_deck)
+    trials = 100000
+    total_of_all_hands = 0
+    total_of_valid_hands = 0
+    num_valid_hands = 0
+    total_for_all_hands = defaultdict(lambda:0)
+    
+    for i in range(testing_hand_value + 1, 22):
+        total_for_all_hands[i] = 0
+    total_for_all_hands['Bust'] = 0
+    total_for_starting_hands = defaultdict(lambda:0)
+    total_for_drawn_card = defaultdict(lambda:0)
+    
+    for n in range(trials):
+        # print(n)
+        prob_test_hand.draw_starting_hand(testing_hand_value)
+        if prob_test_hand.value != testing_hand_value:
+            print("STARTING VALUE NOT the designated hand value")
+
+        total_for_starting_hands[prob_test_hand.hand] += 1
+
+        start_hand = prob_test_hand.hand
+
+        prob_test_hand.draw_random()
+        # print(prob_test_hand.value)
+
+        drawn_card = prob_test_hand.hand[2]
+        total_for_drawn_card[drawn_card] += 1
+
+        total_of_all_hands += prob_test_hand.value
+        if prob_test_hand.value <= 21:
+            num_valid_hands += 1
+            total_of_valid_hands += prob_test_hand.value
+            total_for_all_hands[prob_test_hand.value] += 1
+        else:
+            total_for_all_hands['Bust'] += 1
+        
+        value_after_hit[testing_hand_value].append(prob_test_hand.value)
+        
+        reset_hand_and_deck(prob_test_hand, global_deck)
+
+    print(f'----Graphing FOR {testing_hand_value}------------')
+    # print(total_for_all_hands)
+    # print(total_for_starting_hands)
+    # print(total_for_drawn_card)
+    # print(num_valid_hands)
+    print('Avg valid hand:', total_of_valid_hands / num_valid_hands)
+    print('Avg for all hands:', total_of_all_hands / trials)
+    print('Probability of not busting:', num_valid_hands / trials)
+
+    total_for_all_hands_normalized = {}
+    for i in total_for_all_hands.keys():
+        total_for_all_hands_normalized[i] = total_for_all_hands[i] / trials
+
+    names = list(total_for_all_hands_normalized.keys())
+    values = list(total_for_all_hands_normalized.values())
+
+
+
+    plt.figure(figsize=[10,5])
+    plt.xticks(fontsize=8)
+    plt.bar(range(len(total_for_all_hands)), values, align='center')
+    plt.xticks(range(len(total_for_all_hands)), names)
+    plt.title(f"Starting Hand Value = {testing_hand_value} | Avg valid hand after hitting = {total_of_valid_hands / num_valid_hands :.3f}")
+    plt.suptitle(f"n = {trials} | p(not busting) = {num_valid_hands / trials :.3f}")
+    plt.savefig('blackjack/graphs/bust_prob/hand_' + str(testing_hand_value) + '.png', bbox_inches='tight')
+    # plt.show()
+    plt.close()
+
+
